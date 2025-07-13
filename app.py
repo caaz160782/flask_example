@@ -1,9 +1,40 @@
-from flask import Flask, request, render_template, jsonify
+from flask import Flask, request, render_template, jsonify, url_for,session
 from markupsafe import escape
+from werkzeug.exceptions import abort
+from werkzeug.utils import redirect
 
 app = Flask(__name__)
 
-@app.route("/")
+app.secret_key = 'Mi_llave_secreta'
+
+
+# http://localhost:5000/
+@app.route('/')
+def inicio():
+    if 'username' in session:
+        return f'El usuario ya ha hecho login {session["username"]}'
+    return 'No ha hecho login'
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        # Omitimos validación de usuario y password
+        usuario = request.form['username']
+        # agregar el usuario a la sesión
+        session['username'] = usuario
+        # session['username'] = request.form['username']
+        return redirect(url_for('inicio'))
+    return render_template('login.html')
+
+
+@app.route('/logout')
+def logout():
+    session.pop('username')
+    return redirect(url_for('inicio'))
+
+
+@app.route("/index")
 def index():
     app.logger.debug('mensaje a nivel debug')
     app.logger.info('mensaje a nivel info')
@@ -30,6 +61,21 @@ def postHello():
     # nombre = request.form.get('nombre')  # si viene de un formulario HTML
     nombre = request.json.get('nombre')  # si viene como JSON
     return f"<h1>Hola, {nombre}!</h1>"
+
+@app.route('/redireccionar')
+def redireccionar():
+    return redirect(url_for('mostrar_nombre', nombre='Juan'))
+
+
+@app.route('/salir')
+def salir():
+    return abort(404)
+
+
+@app.errorhandler(404)
+def pagina_no_encontrada(error):
+    return render_template('error404.html', error=error), 404
+
 
 #jinja
 @app.route("/templateJinga")
