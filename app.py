@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, jsonify
 from markupsafe import escape
 
 app = Flask(__name__)
@@ -40,3 +40,9 @@ def templateJinga():
 def saludar():
     nombre = request.form.get("nombre")
     return render_template("saludo.html", nombre=nombre)
+
+#json
+@app.route('/api/mostrar/<nombre>', methods=['GET'])
+def mostar_json(nombre):
+    valores ={'nombre':nombre}
+    return jsonify(valores)
