@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Saludo con Flask y Jinja</title>
+</head>
+<body>
+    <h1>Formulario de saludo</h1>
+    <form action="/saludo" method="POST">
+        <label for="nombre">Nombre:</label>
+        <input type="text" id="nombre" name="nombre" required>
+        <button type="submit">Enviar</button>
+    </form>
+
+    {% if nombre %}
+        <h2>Hola, {{ nombre }}!</h2>
+    {% endif %}
+</body>
+</html>

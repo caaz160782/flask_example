@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, render_template
 from markupsafe import escape
 
 app = Flask(__name__)
@@ -30,3 +30,13 @@ def postHello():
     # nombre = request.form.get('nombre')  # si viene de un formulario HTML
     nombre = request.json.get('nombre')  # si viene como JSON
     return f"<h1>Hola, {nombre}!</h1>"
+
+#jinja
+@app.route("/templateJinga")
+def templateJinga():
+    return render_template("saludo.html")
+
+@app.route("/saludo", methods=["POST"])
+def saludar():
+    nombre = request.form.get("nombre")
+    return render_template("saludo.html", nombre=nombre)
